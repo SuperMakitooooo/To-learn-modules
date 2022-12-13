@@ -1,41 +1,52 @@
-﻿import tkinter as tk
+import tkinter as tk
 from functools import partial 
 import datetime
 import time
 
-
+#
 month = str(int(datetime.datetime.now().isoformat()[5:7]))
 day_list = [29,31,29,31,30,31,30,31,31,30,31,30,31]
+week = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
+
+sub_window = []
+main_window = dict()
+others = dict()
+
+class button(tk.Button):
+	def __init__(self,label_text,run_command):
+		super().__init__(self,hedder,label_text,relief=tk.RAISED, width="5", height="1", command=run_command)
+		
 
 
 class carender():
 	def __init__(self,master=None):
-		self.root = tk.Tk()
-		hedder = tk.Label(self.root,text="",relief=tk.RAISED,pady =0)
-		hedder_week = tk.Label(self.root, text="",padx=0)
+		main_window["root"] = tk.Tk()
+		labels = dict()
+		others["hedder"] = tk.Label(main_window["root"],text="",relief=tk.RAISED,pady =0)
+		others["hedder_week"] = tk.Label(main_window["root"], text="",padx=0)
 	
-		week = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+		
 		for k,i in enumerate(week,0):
-			label_week=tk.Label(hedder_week,text=i,width="10",height="1")
-			label_week.grid(row=0,column=k)
+			others["label_week"]=tk.Label(hedder_week,text=i,width="10",height="1")
+			others["label_week"].grid(row=0,column=k)
 
-		self.body = tk.Label(self.root,text="123")
-		self.label_month=tk.Label(hedder,text=month + "月",width="5",height="1")
+		main_window["body"] = tk.Label(main_window["root"],text="123")
+		main_window["label_month"]=tk.Label(others["hedder"],text=month + "月",width="5",height="1")
 		
-		button_before = tk.Button(hedder,text="before",relief=tk.RAISED,width = "5",height = "1",command=partial(self.change,"before"))
-		button_after = tk.Button(hedder,text="after",relief=tk.RAISED,width = "5",height = "1",command=partial(self.change,"after"))
-		button_quit = tk.Button(hedder,text="quit")
+		others["button_before"] = button(others["hedder"],text="before", partial(self.change,"before"))
+		others["button_after"] = button(others["hedder"],text="after", partial(self.change,"after"))
+		others["button_quit"] = button(others["hedder"],text="quit",None)
 		
-		hedder.grid(row=0)
-		hedder_week.grid(row=1)
+		main_window["body"].grid(row=0)
+		others["hedder_week"].grid(row=1)
 		
-		self.body.grid(row=2)
-		self.label_month.grid(row=0,column=1)
+		main_window["body"].grid(row=2)
+		main_window["label_month"].grid(row=0,column=1)
 		
-		button_before.grid(row=0,column=0)
-		button_after.grid(row=0,column=2)
-		button_quit.grid(row=0,column=4)
+		others["button_before"].grid(row=0,column=0)
+		others["button_after"].grid(row=0,column=2)
+		others["button_quit"].grid(row=0,column=4)
 		self.buttons(int(month),31,0)
 
 	
@@ -54,20 +65,20 @@ class carender():
 		days = day_list[month_num]
 		
 
-		self.button = []
+		main_window["Buttons"] = []
 		for i in range(1,days+1):
 			print(i)
-			self.button.append(tk.Button(self.body, text = str(i), relief = tk.RAISED,width=10,height=6,bg = "white" ))
+			main_window["Buttons"].append(tk.Button(main_window["body"], text = str(i), relief = tk.RAISED,width=10,height=6,bg = "white" ))
 		
-		print(self.button)
-		for i in range(0,len(self.button)):
+	
+		for i in range(0,len(main_window["Buttons"])):
 			first_day = datetime.date(2022,int(self.label_month["text"][:-1]),1).weekday()
 			d =  1 + i
-			self.button[i].bind("<Enter>", partial(self.subwindows, d, "show", 0))
-			self.button[i].bind("<Leave>", partial(self.subwindows, d, "show", 1))
-			self.button[i].bind("<ButtonPress>", partial(self.subwindows, d, "write", 0))	
+			main_window["Buttons"][i].bind("<Enter>", partial(self.subwindows, d, "show", 0))
+			main_window["Buttons"][i].bind("<Leave>", partial(self.subwindows, d, "show", 1))
+			main_window["Buttons"][i].bind("<ButtonPress>", partial(self.subwindows, d, "write", 0))	
 			position = first_day + i
-			self.button[i].grid(column=position%7,row=1+int(position//7))
+			main_window["Buttons"][i].grid(column=position%7,row=1+int(position//7))
 	
 	def subwindows(self,day,mode,other,event_variable):
 		if mode == "show":
@@ -148,7 +159,5 @@ class carender():
 
 
 widgets = carender()
-widgets.mainloops(widgets.root)
-
-
+widgets.mainloops(widgets.roo
 
